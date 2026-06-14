@@ -59,16 +59,28 @@ export class ARScene {
     });
     this.labels = points.map((p) => {
       const label = new Label(p);
-      this.scene.add(label.sprite);
+      this.scene.add(label.mesh);
       return label;
     });
     this.points = points;
     if (this.userPos) this._reposition();
   }
 
-  // GPS 갱신 → 라벨 위치/거리 다시 계산.
+  // GPS 갱신 → 위치 스무딩 후 라벨 위치/거리 다시 계산.
+  // GPS는 가만히 있어도 출렁이므로 저주파 필터로 떨림을 완화한다.
   setUserPosition(pos) {
-    this.userPos = pos;
+    const A = 0.25; // 작을수록 안정적·반응 느림
+    if (!this._smoothPos) {
+      this._smoothPos = { lat: pos.lat, lng: pos.lng };
+    } else {
+      this._smoothPos.lat += (pos.lat - this._smoothPos.lat) * A;
+      this._smoothPos.lng += (pos.lng - this._smoothPos.lng) * A;
+    }
+    this.userPos = {
+      lat: this._smoothPos.lat,
+      lng: this._smoothPos.lng,
+      accuracy: pos.accuracy,
+    };
     this._reposition();
   }
 
@@ -94,14 +106,14 @@ export class ARScene {
       const p = label.point;
       label.distance = haversine(lat, lng, p.lat, p.lng);
       label._brg = bearing(lat, lng, p.lat, p.lng);
-      label.sprite.visible = label.distance <= LOAD_RADIUS_M;
+      label.mesh.visible = label.distance <= LOAD_RADIUS_M;
     }
 
     // 2) 같은 방향(겹침) 처리: 방위 15° 버킷으로 묶어, 가까운 것이 아래로
     //    오게 정렬한 뒤 세로로 스택 (CLAUDE.md 제약 1).
     const buckets = new Map();
     for (const label of this.labels) {
-      if (!label.sprite.visible) continue;
+      if (!label.mesh.visible) continue;
       const key = Math.round(label._brg / 15);
       if (!buckets.has(key)) buckets.set(key, []);
       buckets.get(key).push(label);
@@ -115,7 +127,7 @@ export class ARScene {
         // 코앞/GPS 떨림으로 거의 0m면 최소 거리로 밀어냄. 뱃지는 실제 거리.
         const shown = Math.max(label.distance, MIN_DISPLAY_M);
         const { x, z } = toLocalXZ(label._brg, shown);
-        label.sprite.position.set(x, LABEL_Y + i * STACK_GAP, z);
+        label.mesh.position.set(x, LABEL_Y + i * STACK_GAP, z);
         label.setDistance(label.distance);
       });
     }
@@ -134,12 +146,12 @@ export class ARScene {
       -((e.clientY - rect.top) / rect.height) * 2 + 1
     );
     this._raycaster.setFromCamera(ndc, this.camera);
-    const sprites = this.labels
-      .filter((l) => l.sprite.visible)
-      .map((l) => l.sprite);
-    const hits = this._raycaster.intersectObjects(sprites, false);
+    const meshes = this.labels
+      .filter((l) => l.mesh.visible)
+      .map((l) => l.mesh);
+    const hits = this._raycaster.intersectObjects(meshes, false);
     if (!hits.length) return;
-    const label = this.labels.find((l) => l.sprite === hits[0].object);
+    const label = this.labels.find((l) => l.mesh === hits[0].object);
     if (label) this._onLabelTap(label.point, label.distance);
   }
 
@@ -165,6 +177,12 @@ export class ARScene {
     this.camera.rotation.y = THREE.MathUtils.degToRad(-this._smoothHeading);
     this.camera.rotation.x = THREE.MathUtils.degToRad(this._smoothPitch - 90);
     this.camera.rotation.z = 0;
+
+    // 전광판 큐브: 공중에서 천천히 자전 (≈한 바퀴 25초).
+    for (const label of this.labels) {
+      if (label.mesh.visible) label.mesh.rotation.y += 0.004;
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 

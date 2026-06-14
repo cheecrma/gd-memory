@@ -14,7 +14,13 @@
       "Bash(echo \"=== INSERT 테스트 \\(ASCII\\) ===\")",
       "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' -X POST https://ysoruftsrjktbspqgnjr.supabase.co/rest/v1/memories -H 'apikey: sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Authorization: Bearer sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Content-Type: application/json' -H 'Prefer: return=representation' --data-binary @/tmp/ins.json)",
       "Bash(curl -s \"https://dapi.kakao.com/v2/maps/sdk.js?appkey=8b5f31e2be03e5739827d92f70c6a68d&autoload=false\")",
-      "Bash(curl -s \"https://dapi.kakao.com/v2/maps/sdk.js?appkey=8b5f31e2be03e5739827d92f70c6a68d&autoload=false\" -H \"Referer: https://172.30.1.92:5173/\")"
+      "Bash(curl -s \"https://dapi.kakao.com/v2/maps/sdk.js?appkey=8b5f31e2be03e5739827d92f70c6a68d&autoload=false\" -H \"Referer: https://172.30.1.92:5173/\")",
+      "Bash(ls -la .vercel)",
+      "Bash(cat .vercel/project.json)",
+      "Bash(rm -rf .vercel)",
+      "Read(//c/Users/cheecrma/Desktop/**)",
+      "Read(//c/Users/cheecrma/**)",
+      "Read(//c/Users/cheecrma/AppData/Roaming/**)"
     ]
   }
 }
