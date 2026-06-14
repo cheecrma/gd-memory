@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>건대의 기억</title>
+  </head>
+  <body>
+    <!-- 카메라 배경 (getUserMedia 영상) -->
+    <video id="cam" autoplay playsinline muted></video>
+
+    <!-- three.js 투명 캔버스가 이 안에 들어감 -->
+    <div id="ar-root"></div>
+
+    <!-- 디버그 오버레이 (PoC 동안 상시 표시) -->
+    <div id="debug" class="hidden"></div>
+
+    <!-- GPS 약함 배너 -->
+    <div id="gps-warn" class="banner hidden">GPS 신호가 약해요 — 열린 곳으로 이동해보세요</div>
+
+    <!-- 토스트 -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- 화면 1: 랜딩 -->
+    <section id="landing" class="screen">
+      <div class="landing-inner">
+        <h1>건대의 기억</h1>
+        <p class="tagline">이 자리에 남겨진 글을, 카메라를 켜고 만나보세요.</p>
+        <input
+          id="nickname"
+          type="text"
+          maxlength="20"
+          placeholder="닉네임 (최대 20자)"
+          autocomplete="off"
+        />
+        <button id="start-btn">AR 시작</button>
+        <p class="hint">시작을 누르면 카메라 · 위치 · 방향 센서 권한을 요청합니다.</p>
+      </div>
+    </section>
+
+    <!-- 화면 2: AR 뷰 상단 지도 버튼 + 하단 작성 버튼 -->
+    <button id="map-btn" class="round-btn hidden" title="주변 지도">🗺️</button>
+    <div id="ar-ui" class="hidden">
+      <button id="leave-btn">✍️ 여기에 남기기</button>
+    </div>
+
+    <!-- 화면 3: 작성 모달 -->
+    <section id="write-modal" class="screen modal hidden">
+      <div class="modal-card">
+        <h2>여기에 남기기</h2>
+        <div class="tag-select">
+          <button type="button" class="tag-btn active" data-tag="memory">💌 기억</button>
+          <button type="button" class="tag-btn" data-tag="tip">📍 명당·팁</button>
+        </div>
+        <input
+          id="write-title"
+          type="text"
+          maxlength="40"
+          placeholder="제목 (지도·목록에 보여요)"
+          autocomplete="off"
+        />
+        <div class="char-count"><span id="title-now">0</span> / 40</div>
+        <textarea
+          id="write-text"
+          maxlength="200"
+          rows="4"
+          placeholder="내용 — 이 자리에 와서 카메라로만 보여요. 예: 여기서 처음 고백했던 날"
+        ></textarea>
+        <div class="char-count"><span id="char-now">0</span> / 200</div>
+        <p class="legal">
+          작성 정보는 보관되며, 타인 비방 시 법적 책임이 따를 수 있습니다.
+        </p>
+        <div class="modal-actions">
+          <button type="button" id="write-cancel" class="btn-ghost">취소</button>
+          <button type="button" id="write-submit" class="btn-primary">남기기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 글 상세 (AR에서 말풍선 탭 시) -->
+    <section id="detail-modal" class="screen modal hidden">
+      <div class="modal-card">
+        <div class="detail-head">
+          <span id="detail-tag" class="detail-tag">💌 기억</span>
+          <span id="detail-dist" class="detail-dist">약 2m</span>
+        </div>
+        <h2 id="detail-title">제목</h2>
+        <p id="detail-text" class="detail-text">내용</p>
+        <p id="detail-nick" class="detail-nick">— 닉네임</p>
+        <div class="modal-actions">
+          <button type="button" id="detail-report" class="btn-ghost">🚩 신고</button>
+          <button type="button" id="detail-close" class="btn-primary">닫기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 지도 화면 (Kakao Maps) -->
+    <section id="map-screen" class="hidden">
+      <div id="map-topbar">
+        <button id="map-back" class="round-btn">←</button>
+        <span id="map-title">주변 기억 지도</span>
+      </div>
+      <div id="kakao-map"></div>
+      <div id="map-notice" class="map-notice hidden"></div>
+    </section>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

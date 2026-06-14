@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(echo \"=== SELECT memories \\(테이블/키/읽기권한 확인\\) ===\")",
+      "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' 'https://ysoruftsrjktbspqgnjr.supabase.co/rest/v1/memories?select=id&limit=1' -H 'apikey: sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Authorization: Bearer sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_')",
+      "Bash(echo \"=== 1\\) 읽기\\(SELECT\\) 권한/테이블 확인 ===\")",
+      "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' 'https://ysoruftsrjktbspqgnjr.supabase.co/rest/v1/memories?select=*&limit=3' -H 'apikey: sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Authorization: Bearer sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_')",
+      "Bash(echo \"\")",
+      "Bash(echo \"=== 2\\) 쓰기\\(INSERT\\) 테스트 — 건대 좌표로 더미 1건 ===\")",
+      "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' -X POST https://ysoruftsrjktbspqgnjr.supabase.co/rest/v1/memories -H 'apikey: sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Authorization: Bearer sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Content-Type: application/json' -H 'Prefer: return=representation' -d '{\"text\":\"연결 테스트 — 곧 지워주세요\",\"lat\":37.5408,\"lng\":127.0793,\"nickname\":\"시스템\",\"tag\":\"tip\"}')",
+      "Bash(printf '%s' '{\"text\":\"connection test - delete me\",\"lat\":37.5408,\"lng\":127.0793,\"nickname\":\"sys\",\"tag\":\"tip\"}')",
+      "Bash(echo \"=== INSERT 테스트 \\(ASCII\\) ===\")",
+      "Bash(curl -s -w '\\\\nHTTP %{http_code}\\\\n' -X POST https://ysoruftsrjktbspqgnjr.supabase.co/rest/v1/memories -H 'apikey: sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Authorization: Bearer sb_publishable_AZWsaP5Xhkn05kl6a3kk-w_lNqpanf_' -H 'Content-Type: application/json' -H 'Prefer: return=representation' --data-binary @/tmp/ins.json)",
+      "Bash(curl -s \"https://dapi.kakao.com/v2/maps/sdk.js?appkey=8b5f31e2be03e5739827d92f70c6a68d&autoload=false\")",
+      "Bash(curl -s \"https://dapi.kakao.com/v2/maps/sdk.js?appkey=8b5f31e2be03e5739827d92f70c6a68d&autoload=false\" -H \"Referer: https://172.30.1.92:5173/\")"
+    ]
+  }
+}
